@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>INSTA</title>
+</head>
+<body>
+    <div class="container">
+        <h2>Follow Request</h2>
+        <div class="form-group">
+            <label for="userId">User ID to Follow</label>
+            <input type="text" id="userId" placeholder="Enter your Id">
+        </div>
+        <button id="sendRequest">send</button>
+        <button id="approveRequest">approve</button>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded',()=>{
+            const sendBtn=document.getElementById("sendRequest");
+            const approveBtn=document.getElementById("approve");
+            const userId=document.getElementById("userId");
+            sendBtn.addEventListener('click',()=>{
+                const id=userId.value.trim();
+                if(id){
+                    fetch(`http://localhost:5000/user/follow/${id}`,{
+                        method:"POST",
+                        headers: {
+                            'Content-Type':"application/json"
+                        },
+                        body:JSON.stringify({followerId:"667ad3a70cb00f9021c77aec"})
+                    })
+                    .then(response=>{
+                        if(!response.ok){
+                            throw new Error("error 2");
+                        }
+                        return response.json();
+                    })
+                    .then(data=>{
+                        console.log("request sent");
+                        approveBtn.disabled=false;
+                    })
+                    .catch(error=>{
+                        alert("error in sending")
+                    })
+                }
+            })
+            approveBtn.addEventListener('click',()=>{
+                const id=userId.value.trim();
+                if(id){
+                    fetch(`http://localhost:5000/approve/${id}`,{
+                        method:"POST",
+                        headers: {
+                            'Content-Type':"application/json"
+                        },
+                        body:JSON.stringify({followerId:"667ad3a70cb00f9021c77aec"})
+                    })
+                    .then(response=>{
+                        if(!response.ok){
+                            throw new Error("error 2");
+                        }
+                        return response.json();
+                    })
+                    .then(data=>{
+                        console.log("approved");
+                        userId.value=''
+                        alert("approved")
+                    })
+                    .catch(error=>{
+                        alert("error in approve")
+                    })
+                }
+            })
+        })
+    </script>
+</body>
+</html>
